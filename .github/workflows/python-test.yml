@@ -23,6 +23,7 @@ jobs:
           git submodule update --init
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -r requirements-dev.txt
       - name: Lint with flake8
         run: |
           pip install flake8
@@ -32,5 +33,4 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         run: |
-          pip install -r requirements-dev.txt
           pytest tests
