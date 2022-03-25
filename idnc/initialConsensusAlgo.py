@@ -28,6 +28,7 @@ import numpy as np
 # if a variable here needs to be modified by a function, use 'global' keyword inside the function
 
 gainConsensus = 1
+virtualRobotNb = 0
 # ===================================================================================
 
 # =======================================
