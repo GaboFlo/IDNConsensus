@@ -27,12 +27,9 @@ import numpy as np
 # all variables declared here will be known by functions below
 # if a variable here needs to be modified by a function, use 'global' keyword inside the function
 
-gainConsensus = 1
-virtualRobotNb = 0
-# ===================================================================================
 
 # =======================================
-def consensus(robotNo: int, nbRobots: int, poses: np.ndarray):
+def consensus(robotNo: int, nbRobots: int, poses: np.ndarray, gain: float = 1.0):
     # =======================================
     adjacency = np.ones(nbRobots) - np.eye(nbRobots)
     poses = poses[:2, :]
@@ -41,8 +38,7 @@ def consensus(robotNo: int, nbRobots: int, poses: np.ndarray):
     diffs = pos - poses
     robotAdjacency = adjacency[robotNo - 1]
 
-    global gainConsensus
-    [vx, vy] = -gainConsensus * np.dot(diffs, robotAdjacency)
+    [vx, vy] = -gain * np.dot(diffs, robotAdjacency)
 
     return vx, vy
 
@@ -57,27 +53,3 @@ def controller(robotNo, nbRobots, poses):
     # UNCOMMENT THE ONE TO BE TESTED FOR EXPERIMENT
     vx, vy = consensus(robotNo, nbRobots, poses)
     return vx, vy
-
-
-# ====================================
-
-if __name__ == "__main__":
-    poses = np.array(
-        [
-            [1, 1, -3 * np.pi / 4],
-            [1, -1, 3 * np.pi / 4],
-            [-1, 1, -np.pi / 4],
-            [-1, -1, np.pi / 4],
-        ]
-    )
-    poses = poses.transpose()
-    nRobots = poses.shape[1]
-    gainConsensus = 1 / nRobots
-    barycenter = np.mean(poses, axis=1)
-    for robot in range(1, nRobots + 1):
-        expected = tuple(barycenter[:2] - poses[:2, robot - 1])
-        value = consensus(robot, nRobots, poses=poses)
-        print(f"Robot n°{robot} gave control {value} when expecting {expected}.")
-        assert value == expected
-
-    print("Test passed !")
