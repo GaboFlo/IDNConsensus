@@ -26,3 +26,11 @@ pip install -r requirements.txt
 ```
 
 
+## Simulation
+
+You can launch a quick simulation using:
+
+``` bash
+python -m idnc.simulation
+```
+
