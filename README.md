@@ -1,4 +1,4 @@
-# Intruder Detection & Neutralisation Consensus (IDNC)
+# Intruder Detection & Neutralization Consensus (IDNC)
 
 Project to apply consensus algorithms to reproduce the defence mechanisms of the immune system.
 
