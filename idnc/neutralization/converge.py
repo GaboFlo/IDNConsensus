@@ -17,20 +17,10 @@
    
 """
 
-import math
-
 import numpy as np
 
-# import rospy
 
-# ==============   "GLOBAL" VARIABLES KNOWN BY ALL THE FUNCTIONS ===================
-# all variables declared here will be known by functions below
-# if a variable here needs to be modified by a function, use 'global' keyword inside the function
-
-
-# =======================================
 def consensus(robotNo: int, nbRobots: int, poses: np.ndarray, gain: float = 1.0):
-    # =======================================
     adjacency = np.ones(nbRobots) - np.eye(nbRobots)
     poses = poses[:2, :]
 
@@ -43,13 +33,6 @@ def consensus(robotNo: int, nbRobots: int, poses: np.ndarray, gain: float = 1.0)
     return vx, vy
 
 
-# ====================================
-
-
-# ======== ! DO NOT MODIFY ! ============
 def controller(robotNo, nbRobots, poses):
-    # =======================================
-
-    # UNCOMMENT THE ONE TO BE TESTED FOR EXPERIMENT
     vx, vy = consensus(robotNo, nbRobots, poses)
     return vx, vy
