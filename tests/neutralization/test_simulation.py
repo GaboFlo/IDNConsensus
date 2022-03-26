@@ -1,6 +1,6 @@
 import numpy as np
 import pytest_check as check
-from idnc.neutralization.simulation import basicsim
+from idnc.simulation.simulation import basicsim
 
 
 def test_basicsim():
