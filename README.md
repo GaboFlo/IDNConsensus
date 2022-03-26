@@ -4,7 +4,7 @@ Project to apply consensus algorithms to reproduce the defence mechanisms of the
 
 Using a consensus of cameras we detect a robot intruder (like a cell intruder) and estimate its position, then we send robots towards the estimated position (like antibodies neutralizing the threat). 
 
-This project is a colaboration between CentraleSupelec french engineering school and US students at the Rogers University.
+This project is a collaboration between CentraleSupélec French engineering school and US students at the Rogers University.
 
 ## Installation
 
