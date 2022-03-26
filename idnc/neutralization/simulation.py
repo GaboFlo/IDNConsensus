@@ -17,7 +17,7 @@ def basicsim(
 
     Args:
         n_steps (int): Number of simulation steps.
-        controller (Callable): Behavior of the robots.
+        controller (Callable): Behavior of the robots returning their wanted velocities from all robots positions.
         initial_poses (np.ndarray): Initial poses of the robots.
             First dimention lenght should be the number of robots.
         step_time (float): Time passed each step.
