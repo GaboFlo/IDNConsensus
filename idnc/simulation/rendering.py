@@ -4,6 +4,7 @@ from time import sleep
 from typing import Tuple
 
 import numpy as np
+import math
 
 import pyglet
 from pyglet.image import Texture
@@ -20,7 +21,7 @@ class RenderCallback(Callback):
 
     def __init__(self, fps=120):
         self.params = {}
-        self.fps = 120
+        self.fps = fps
         self.window = pyglet.window.Window(800, 600)
         ressources_path = path.join(path.dirname(__file__), "resources")
 
@@ -45,7 +46,7 @@ class RenderCallback(Callback):
             image.anchor_x = image.width // 2
             image.anchor_y = image.height // 2
 
-        self.burger_image: Texture = pyglet.resource.image("burger.png")
+        self.burger_image: Texture = pyglet.resource.image("burger.png", rotate=90)
         resize_image(self.burger_image, size=(64, 64))
         center_image(self.burger_image)
 
@@ -71,15 +72,16 @@ class RenderCallback(Callback):
         """
         disp_poses = copy(poses)
         disp_poses *= np.array(
-            [[self.window.width / scale[0], self.window.height / scale[1]]]
+            [[self.window.width / scale[0], self.window.height / scale[1], 1]]
         )
-        disp_poses += np.array([[self.window.width // 2, self.window.height // 2]])
+        disp_poses += np.array([[self.window.width // 2, self.window.height // 2, 0]])
         return disp_poses
 
     def update(self, poses):
         display_poses = self.map_to_display(poses, scale=(10, 10))
         for sprite, pos in zip(self.burger_sprites, display_poses):
-            sprite.position = pos
+            sprite.position = pos[:2]
+            sprite.rotation = math.degrees(pos[2])
 
     def on_step_begin(self, step: int, logs: dict = None):
         """Triggers on each step beginning
