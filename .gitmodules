@@ -1,0 +1,3 @@
+[submodule "idnc/detection/yolor"]
+	path = idnc/detection/yolor
+	url = https://github.com/MathisFederico/yolor
