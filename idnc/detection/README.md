@@ -4,24 +4,32 @@ You will have a real time object detection, using your webcam.
 
 # Installing yolor
 
-0. Activate you virtual environment (not mandatory, but preferred option)
-1. Fork submodule Yolor
-   1. Run
-   ```bash
-   git submodule init
-   ```
-   2. Then
-   ```bash
-   git submodule update --init
-   ```
-2. Install dependencies of the yolor fork
+Activate you virtual environment (not mandatory, but preferred option)
+
+## Fork submodule Yolor
 
 ```bash
+git submodule init
+```
+
+```bash
+git submodule update --init
+```
+
+## Install dependencies of the yolor fork
+
+```bash
+cd ../idnc/detection/yolor
 pip install -r requirements.txt
 ```
 
-3. Download the pre-trained weights (for example the [YOLOR-CSP](https://github.com/MathisFederico/yolor/tree/main#yolor) one, about 200Mo).
-4. Put this `.pt` file in `..\yolor\models`
+## Download pre-trained weights
+
+Download the pre-trained weights (for example the [YOLOR-CSP](https://drive.google.com/file/d/1ZEqGy4kmZyD-Cj3tEFJcLSZenZBDGiyg/view?usp=sharing) one, about 200Mo).
+
+## Add it in the appropriated folder
+
+Put this `.pt` file in `..\yolor\models`
 
 # Runing the experiment
 
