@@ -133,5 +133,11 @@ dmypy.json
 .vscode/
 
 # Datasets
-**/data/
+turtlebots/
 coco/
+
+# Temporary folders
+**/tmp/
+
+# Keys
+*.key
