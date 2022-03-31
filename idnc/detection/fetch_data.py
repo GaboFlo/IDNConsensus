@@ -44,8 +44,8 @@ def visualize_bbox(image: np.ndarray, tool: Dict[str, Any]) -> np.ndarray:
 
 def strip_external_id_data(external_id: str) -> Tuple[int, int]:
     external_id = external_id.split("-")[0]
-    cam_id = external_id.split("_")[1]
-    scene_id = external_id[-1]
+    cam_id = int(external_id.split("_")[1])
+    scene_id = int(external_id[-1])
     return scene_id, cam_id
 
 
