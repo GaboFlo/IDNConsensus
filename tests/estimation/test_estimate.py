@@ -9,7 +9,9 @@ from idnc.estimation.estimate_target_position import (
 
 
 def test_estimate_fullBox():
-    coord = from_txt_label_to_array("./tests/estimation/test_fullBox.txt")
+    coord = from_txt_label_to_array(
+        "./tests/estimation/src/test_relativeAngle_fullBox.txt"
+    )
     expectedCoordinates = {
         "x_box_center": 0.5,
         "y_box_center": 0.5,
@@ -32,7 +34,9 @@ def test_estimate_fullBox():
 
 
 def test_estimate_smallerBox():
-    coord = from_txt_label_to_array("./tests/estimation/test_smallerBox.txt")
+    coord = from_txt_label_to_array(
+        "./tests/estimation/src/test_relativeAngle_smallerBox.txt"
+    )
     expectedCoordinates = {
         "x_box_center": 0.6,
         "y_box_center": 0.5,
