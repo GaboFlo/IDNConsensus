@@ -67,6 +67,27 @@ def labels_to_relative_angles(
     return (relativeLeftAngle, relativeRightAngle)
 
 
+def get_center_point_floor_coordinates(
+    xCam: float, yCam: float, zCam: float, phiCam: float, thetaCam: float
+):
+    """Get the coordinates on the floor of the center point of the camera
+
+    Args:
+        xCam (float): x coordinate of the camera (m)
+        yCam (float): y coordinate of the camera (m)
+        zCam (float): z coordinate of the camera (m)
+        phiCam (float): angle (rad)
+        thetaCam (float): angle (rad)
+
+    Returns:
+        xCenter: x coordinate on the floor
+        yCenter: y coordinate on the floor
+    """
+    xCenter = -zCam * np.tan(thetaCam) * np.cos(phiCam) + xCam
+    yCenter = -zCam * np.tan(thetaCam) * np.sin(phiCam) + yCam
+    return (xCenter, yCenter)
+
+
 if __name__ == "__main__":
     """_summary_
 
