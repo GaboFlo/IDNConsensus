@@ -32,7 +32,7 @@ def from_txt_label_to_array(
 
 
 def labels_to_relative_angles(
-    coordinates: dict[str, float],
+    coordinates: 'dict[str, float]',
     horizontalFOVDegree: float = 70.42,
     showPrint: bool = False,
 ):
