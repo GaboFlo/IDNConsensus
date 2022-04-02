@@ -1,5 +1,7 @@
 import sys
 
+import numpy as np
+
 
 def from_txt_label_to_array(
     relativeTxtPath: str, targetWanted: int = 1, showPrint: bool = False
@@ -21,10 +23,10 @@ def from_txt_label_to_array(
             line = [float(i) for i in line]
             if line[0] == targetWanted:
                 targetCoord = {
-                    "x_box_center": line[1],
-                    "y_box_center": line[2],
-                    "width_box": line[3],
-                    "height_box": line[4],
+                    "x_boxCenter": line[1],
+                    "y_boxCenter": line[2],
+                    "widthBox": line[3],
+                    "heightBox": line[4],
                 }
                 if showPrint:
                     print(f"\nIntruder detected \n{targetCoord}\n")
@@ -32,7 +34,7 @@ def from_txt_label_to_array(
 
 
 def labels_to_relative_angles(
-    coordinates: 'dict[str, float]',
+    coordinates: "dict[str, float]",
     horizontalFOVDegree: float = 70.42,
     showPrint: bool = False,
 ):
@@ -40,7 +42,7 @@ def labels_to_relative_angles(
     Get horizontal angles between the center of the picture and the vertical boxes of the target
 
     Args:
-        coordinates (dict[str, float]): coordinates of the potential box [x_box_center, y_box_center, width_box, height_box])
+        coordinates (dict[str, float]): coordinates of the potential box [x_boxCenter, y_boxCenter, widthBox, heightBox])
         horizontalFOVDegree (float) : Horizontal FOV of the camera (degree)
 
     Returns :
@@ -50,8 +52,8 @@ def labels_to_relative_angles(
     """
 
     """ Coordinates of the vertical edges of the box in the global picture. """
-    leftEdgeCoord = coordinates["x_box_center"] - coordinates["width_box"] / 2
-    rightEdgeCoord = coordinates["x_box_center"] + coordinates["width_box"] / 2
+    leftEdgeCoord = coordinates["x_boxCenter"] - coordinates["widthBox"] / 2
+    rightEdgeCoord = coordinates["x_boxCenter"] + coordinates["widthBox"] / 2
 
     """ Relative angle from the center (0.5 , 0) """
     """θ1"""

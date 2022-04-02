@@ -6,6 +6,7 @@ from idnc.estimation.estimate_target_position import (
     from_txt_label_to_array,
     labels_to_relative_angles,
 )
+from idnc.estimation.utils.euler_from_quaternion import euler_from_quaternion
 
 
 def test_estimate_fullBox():
@@ -13,10 +14,10 @@ def test_estimate_fullBox():
         "./tests/estimation/src/test_relativeAngle_fullBox.txt"
     )
     expectedCoordinates = {
-        "x_box_center": 0.5,
-        "y_box_center": 0.5,
-        "width_box": 1,
-        "height_box": 1,
+        "x_boxCenter": 0.5,
+        "y_boxCenter": 0.5,
+        "widthBox": 1,
+        "heightBox": 1,
     }
     for key in expectedCoordinates:
         check.is_true(
@@ -38,10 +39,10 @@ def test_estimate_smallerBox():
         "./tests/estimation/src/test_relativeAngle_smallerBox.txt"
     )
     expectedCoordinates = {
-        "x_box_center": 0.6,
-        "y_box_center": 0.5,
-        "width_box": 0.2,
-        "height_box": 0.2,
+        "x_boxCenter": 0.6,
+        "y_boxCenter": 0.5,
+        "widthBox": 0.2,
+        "heightBox": 0.2,
     }
     for key in expectedCoordinates:
         check.is_true(
