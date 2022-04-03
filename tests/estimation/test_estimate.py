@@ -3,15 +3,17 @@ from tabnanny import check
 import numpy as np
 import pytest_check as check
 from idnc.estimation.estimate_target_position import (
-    from_txt_label_to_array,
     LabelBoxParams,
+    from_txt_label_to_array,
     labels_to_relative_angles,
 )
 from idnc.estimation.utils.euler_from_quaternion import euler_from_quaternion
 
 
 def test_estimate_fullBox():
-    coord = from_txt_label_to_array("./tests/estimation/test_fullBox.txt")
+    coord = from_txt_label_to_array(
+        "./tests/estimation/src/test_relativeAngle_fullBox.txt"
+    )
     expectedCoordinates: LabelBoxParams = {
         "x_box_center": 0.5,
         "y_box_center": 0.5,
@@ -34,7 +36,9 @@ def test_estimate_fullBox():
 
 
 def test_estimate_smallerBox():
-    coord = from_txt_label_to_array("./tests/estimation/test_smallerBox.txt")
+    coord = from_txt_label_to_array(
+        "./tests/estimation/src/test_relativeAngle_smallerBox.txt"
+    )
     expectedCoordinates: LabelBoxParams = {
         "x_box_center": 0.6,
         "y_box_center": 0.5,

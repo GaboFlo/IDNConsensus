@@ -8,6 +8,7 @@ class LabelBoxParams(Dict):
     width_box: float
     height_box: float
 
+
 import numpy as np
 
 
@@ -50,7 +51,7 @@ def labels_to_relative_angles(
     Get horizontal angles between the center of the picture and the vertical boxes of the target
 
     Args:
-        coordinates (dict[str, float]): coordinates of the potential box [x_boxCenter, y_boxCenter, widthBox, heightBox])
+        coordinates (dict[str, float]): coordinates of the potential box [x_box_center, y_box_center, width_box, height_box])
         horizontalFOVDegree (float) : Horizontal FOV of the camera (degree)
 
     Returns :
@@ -60,8 +61,8 @@ def labels_to_relative_angles(
     """
 
     """ Coordinates of the vertical edges of the box in the global picture. """
-    leftEdgeCoord = coordinates["x_boxCenter"] - coordinates["widthBox"] / 2
-    rightEdgeCoord = coordinates["x_boxCenter"] + coordinates["widthBox"] / 2
+    leftEdgeCoord = coordinates["x_box_center"] - coordinates["width_box"] / 2
+    rightEdgeCoord = coordinates["x_box_center"] + coordinates["width_box"] / 2
 
     """ Relative angle from the center (0.5 , 0) """
     """θ1"""
