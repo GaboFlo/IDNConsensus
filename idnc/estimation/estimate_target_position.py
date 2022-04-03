@@ -1,11 +1,19 @@
-import sys
+import argparse
+from typing import Dict
+
+
+class LabelBoxParams(Dict):
+    x_box_center: float
+    y_box_center: float
+    width_box: float
+    height_box: float
 
 import numpy as np
 
 
 def from_txt_label_to_array(
     relativeTxtPath: str, targetWanted: int = 1, showPrint: bool = False
-) -> list:
+):
     """
     Open txt file and return the coordinates of the potential box
     Args:
@@ -22,11 +30,11 @@ def from_txt_label_to_array(
             line = line.split(" ")
             line = [float(i) for i in line]
             if line[0] == targetWanted:
-                targetCoord = {
-                    "x_boxCenter": line[1],
-                    "y_boxCenter": line[2],
-                    "widthBox": line[3],
-                    "heightBox": line[4],
+                targetCoord: LabelBoxParams = {
+                    "x_box_center": line[1],
+                    "y_box_center": line[2],
+                    "width_box": line[3],
+                    "height_box": line[4],
                 }
                 if showPrint:
                     print(f"\nIntruder detected \n{targetCoord}\n")
@@ -34,7 +42,7 @@ def from_txt_label_to_array(
 
 
 def labels_to_relative_angles(
-    coordinates: "dict[str, float]",
+    coordinates: LabelBoxParams,
     horizontalFOVDegree: float = 70.42,
     showPrint: bool = False,
 ):
@@ -94,16 +102,17 @@ if __name__ == "__main__":
     Raises:
         Exception: if no file name is provided with -file argument (.txt label file)
     """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--file",
+        dest="file",
+        required=True,
+        type=str,
+        help="Relative path of the .txt file",
+    )
 
-    args = sys.argv[1:]
-    fileName = ""
-    if len(args) > 1:
-        if args[0] == "-file":
-            fileName = args[1]
+    arg = parser.parse_args()
 
-    if fileName == "":
-        raise Exception("No label file provided, use ` -file myFileName.txt `")
-
-    print(f"\n===={fileName}=====")
-    coord = from_txt_label_to_array(fileName)
+    print(f"\n===={arg.file}=====")
+    coord = from_txt_label_to_array(arg.file)
     angles = labels_to_relative_angles(coord)
