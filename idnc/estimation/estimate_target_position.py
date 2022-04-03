@@ -1,3 +1,4 @@
+import argparse
 import sys
 
 
@@ -32,7 +33,7 @@ def from_txt_label_to_array(
 
 
 def labels_to_relative_angles(
-    coordinates: 'dict[str, float]',
+    coordinates: "dict[str, float]",
     horizontalFOVDegree: float = 70.42,
     showPrint: bool = False,
 ):
@@ -71,16 +72,17 @@ if __name__ == "__main__":
     Raises:
         Exception: if no file name is provided with -file argument (.txt label file)
     """
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--file",
+        dest="file",
+        required=True,
+        type=str,
+        help="Relative path of the .txt file",
+    )
 
-    args = sys.argv[1:]
-    fileName = ""
-    if len(args) > 1:
-        if args[0] == "-file":
-            fileName = args[1]
+    arg = parser.parse_args()
 
-    if fileName == "":
-        raise Exception("No label file provided, use ` -file myFileName.txt `")
-
-    print(f"\n===={fileName}=====")
-    coord = from_txt_label_to_array(fileName)
+    print(f"\n===={arg.file}=====")
+    coord = from_txt_label_to_array(arg.file)
     angles = labels_to_relative_angles(coord)
