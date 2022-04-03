@@ -1,10 +1,17 @@
 import argparse
-import sys
+from typing import Dict
+
+
+class LabelBoxParams(Dict):
+    x_box_center: float
+    y_box_center: float
+    width_box: float
+    height_box: float
 
 
 def from_txt_label_to_array(
     relativeTxtPath: str, targetWanted: int = 1, showPrint: bool = False
-) -> list:
+):
     """
     Open txt file and return the coordinates of the potential box
     Args:
@@ -21,7 +28,7 @@ def from_txt_label_to_array(
             line = line.split(" ")
             line = [float(i) for i in line]
             if line[0] == targetWanted:
-                targetCoord = {
+                targetCoord: LabelBoxParams = {
                     "x_box_center": line[1],
                     "y_box_center": line[2],
                     "width_box": line[3],
@@ -33,7 +40,7 @@ def from_txt_label_to_array(
 
 
 def labels_to_relative_angles(
-    coordinates: "dict[str, float]",
+    coordinates: LabelBoxParams,
     horizontalFOVDegree: float = 70.42,
     showPrint: bool = False,
 ):
