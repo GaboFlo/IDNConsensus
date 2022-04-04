@@ -1,26 +1,25 @@
+from dataclasses import fields
 from tabnanny import check
 
 import numpy as np
 import pytest_check as check
 from idnc.estimation.estimate_target_position import (
-    from_txt_label_to_array,
     LabelBoxParams,
+    from_txt_label_to_array,
     labels_to_relative_angles,
 )
 
 
 def test_estimate_fullBox():
     coord = from_txt_label_to_array("./tests/estimation/test_fullBox.txt")
-    expectedCoordinates: LabelBoxParams = {
-        "x_box_center": 0.5,
-        "y_box_center": 0.5,
-        "width_box": 1,
-        "height_box": 1,
-    }
-    for key in expectedCoordinates:
+    expectedCoordinates = LabelBoxParams(0.5, 0.5, 1.0, 1.0)
+
+    for field in fields(expectedCoordinates):
+        expectation = getattr(expectedCoordinates, field.name)
+        reality = getattr(coord, field.name)
         check.is_true(
-            np.all(np.isclose(expectedCoordinates[key], coord[key])),
-            f"Recreate coordinates {coord[key]} while expecting {expectedCoordinates[key]}.",
+            np.all(np.isclose(expectation, reality)),
+            f"Recreate coordinates {expectation} while expecting {reality}.",
         )
 
     angles = labels_to_relative_angles(expectedCoordinates)
@@ -34,16 +33,14 @@ def test_estimate_fullBox():
 
 def test_estimate_smallerBox():
     coord = from_txt_label_to_array("./tests/estimation/test_smallerBox.txt")
-    expectedCoordinates: LabelBoxParams = {
-        "x_box_center": 0.6,
-        "y_box_center": 0.5,
-        "width_box": 0.2,
-        "height_box": 0.2,
-    }
-    for key in expectedCoordinates:
+    expectedCoordinates = LabelBoxParams(0.6, 0.5, 0.2, 0.2)
+
+    for field in fields(expectedCoordinates):
+        expectation = getattr(expectedCoordinates, field.name)
+        reality = getattr(coord, field.name)
         check.is_true(
-            np.all(np.isclose(expectedCoordinates[key], coord[key])),
-            f"Recreate coordinates {coord[key]} while expecting {expectedCoordinates[key]}.",
+            np.all(np.isclose(expectation, reality)),
+            f"Recreate coordinates {expectation} while expecting {reality}.",
         )
 
     angles = labels_to_relative_angles(expectedCoordinates)
