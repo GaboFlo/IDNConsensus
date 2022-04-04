@@ -1,8 +1,10 @@
 import argparse
+from dataclasses import dataclass
 from typing import Dict
 
 
-class LabelBoxParams(Dict):
+@dataclass
+class LabelBoxParams:
     x_box_center: float
     y_box_center: float
     width_box: float
@@ -31,12 +33,12 @@ def from_txt_label_to_array(
             line = line.split(" ")
             line = [float(i) for i in line]
             if line[0] == targetWanted:
-                targetCoord: LabelBoxParams = {
-                    "x_box_center": line[1],
-                    "y_box_center": line[2],
-                    "width_box": line[3],
-                    "height_box": line[4],
-                }
+                targetCoord = LabelBoxParams(
+                    line[1],
+                    line[2],
+                    line[3],
+                    line[4],
+                )
                 if showPrint:
                     print(f"\nIntruder detected \n{targetCoord}\n")
     return targetCoord
@@ -61,8 +63,12 @@ def labels_to_relative_angles(
     """
 
     """ Coordinates of the vertical edges of the box in the global picture. """
-    leftEdgeCoord = coordinates["x_box_center"] - coordinates["width_box"] / 2
-    rightEdgeCoord = coordinates["x_box_center"] + coordinates["width_box"] / 2
+    leftEdgeCoord = (
+        getattr(coordinates, "x_box_center") - getattr(coordinates, "width_box") / 2
+    )
+    rightEdgeCoord = (
+        getattr(coordinates, "x_box_center") + getattr(coordinates, "width_box") / 2
+    )
 
     """ Relative angle from the center (0.5 , 0) """
     """θ1"""
