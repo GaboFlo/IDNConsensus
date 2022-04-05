@@ -8,7 +8,6 @@ from idnc.estimation.estimate_target_position import (
     from_txt_label_to_LabelBoxParams,
     labels_to_relative_angles,
 )
-from idnc.estimation.utils.euler_from_quaternion import euler_from_quaternion
 
 
 def test_estimate_fullBox():
