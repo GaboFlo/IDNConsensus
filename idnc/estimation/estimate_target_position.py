@@ -3,6 +3,8 @@ import csv
 from dataclasses import dataclass
 from typing import List
 
+from euler_from_quaternion import euler_from_quaternion
+
 
 @dataclass
 class LabelBoxParams:
@@ -14,7 +16,7 @@ class LabelBoxParams:
 
 @dataclass
 class CameraParam:
-    timestamp: int
+    timestamp: float
     position_x: float
     position_y: float
     position_z: float
@@ -170,4 +172,14 @@ if __name__ == "__main__":
     print(f"\n===={arg.labelBox}=====")
     coord = from_txt_label_to_LabelBoxParams(arg.labelBox)
     angles = labels_to_relative_angles(coord)
-    from_ROS_data_to_CameraParams(arg.camera)
+
+    records = from_ROS_data_to_CameraParams(arg.camera)
+    cameraRecord = records[0]
+
+    euler = euler_from_quaternion(
+        getattr(cameraRecord, "orientation_x"),
+        getattr(cameraRecord, "orientation_y"),
+        getattr(cameraRecord, "orientation_z"),
+        getattr(cameraRecord, "orientation_w"),
+    )
+    print(f"Euler angles for camera {arg.camera} : {euler}")
