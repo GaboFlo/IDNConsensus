@@ -32,7 +32,7 @@ class CameraParams:
 import numpy as np
 
 
-def from_txt_label_to_array(
+def from_txt_label_to_LabelBoxParams(
     relativeTxtPath: str, targetWanted: int = 1, showPrint: bool = False
 ):
     """
@@ -62,7 +62,7 @@ def from_txt_label_to_array(
     return targetCoord
 
 
-def from_csv_positions_to_array(relativeTxtPath: str):
+def from_ROS_data_to_CameraParams(relativeTxtPath: str):
     file = open(relativeTxtPath)
     csvreader = csv.reader(file)
     """ Don't care about the header """
@@ -168,6 +168,6 @@ if __name__ == "__main__":
     arg = parser.parse_args()
 
     print(f"\n===={arg.labelBox}=====")
-    coord = from_txt_label_to_array(arg.labelBox)
+    coord = from_txt_label_to_LabelBoxParams(arg.labelBox)
     angles = labels_to_relative_angles(coord)
-    from_csv_positions_to_array(arg.camera)
+    from_ROS_data_to_CameraParams(arg.camera)
