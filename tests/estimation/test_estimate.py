@@ -5,13 +5,15 @@ import numpy as np
 import pytest_check as check
 from idnc.estimation.estimate_target_position import (
     LabelBoxParams,
-    from_txt_label_to_array,
+    from_txt_label_to_LabelBoxParams,
     labels_to_relative_angles,
 )
 
 
 def test_estimate_fullBox():
-    coord = from_txt_label_to_array("./tests/estimation/test_fullBox.txt")
+    coord = from_txt_label_to_LabelBoxParams(
+        "./tests/estimation/src/test_relativeAngle_fullBox.txt"
+    )
     expectedCoordinates = LabelBoxParams(0.5, 0.5, 1.0, 1.0)
 
     for field in fields(expectedCoordinates):
@@ -32,7 +34,9 @@ def test_estimate_fullBox():
 
 
 def test_estimate_smallerBox():
-    coord = from_txt_label_to_array("./tests/estimation/test_smallerBox.txt")
+    coord = from_txt_label_to_LabelBoxParams(
+        "./tests/estimation/src/test_relativeAngle_smallerBox.txt"
+    )
     expectedCoordinates = LabelBoxParams(0.6, 0.5, 0.2, 0.2)
 
     for field in fields(expectedCoordinates):

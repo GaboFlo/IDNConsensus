@@ -34,3 +34,14 @@ The previous calculation being made for each camera (in real time), we can then 
 <p align="center">
   <img src="media/globalSchemeMultipleCameras.png" alt="generalScheme" width="800"/>
 </p>
+
+Positions and orientations data for each object are respectively given with the usual ternion (x,y,z) and the quaternion (x,y,z,w).
+
+📝 Consider [watching an interactive video about quaternion](https://eater.net/quaternions/video/intro) if you don't know (like us) what this format means.
+Read also [ROS description](https://www.ros.org/reps/rep-0103.html#rotation-representation).
+
+We now need to replace the relative angle obtain in [the last part](#within-each-camera) in the global arena. The following scheme explains our reasoning.
+
+<p align="center">
+  <img src="media/schemeAngles.jpg" alt="generalScheme" width="800"/>
+</p>

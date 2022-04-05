@@ -1,6 +1,12 @@
 import argparse
+import csv
 from dataclasses import dataclass
-from typing import Dict
+from typing import List
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+from euler_from_quaternion import euler_from_quaternion
 
 
 @dataclass
@@ -11,7 +17,34 @@ class LabelBoxParams:
     height_box: float
 
 
-def from_txt_label_to_array(
+@dataclass
+class ROSParam:
+    timestamp: float
+    position_x: float
+    position_y: float
+    position_z: float
+    orientation_x: float
+    orientation_y: float
+    orientation_z: float
+    orientation_w: float
+
+
+@dataclass
+class ROSParams:
+    array = List[ROSParam]
+
+
+@dataclass
+class PointsCoordinates:
+    x: float
+    y: float
+    z: float = 0
+
+
+import numpy as np
+
+
+def from_txt_label_to_LabelBoxParams(
     relativeTxtPath: str, targetWanted: int = 1, showPrint: bool = False
 ):
     """
@@ -39,6 +72,25 @@ def from_txt_label_to_array(
                 if showPrint:
                     print(f"\nIntruder detected \n{targetCoord}\n")
     return targetCoord
+
+
+def from_ROS_data_to_params(relativeTxtPath: str):
+    file = open(relativeTxtPath)
+    csvreader = csv.reader(file)
+    """ Don't care about the header """
+    next(csvreader)
+    records: ROSParams = []
+
+    for row in csvreader:
+        cell = row[0].split(";")
+        cell = [float(i) for i in cell]
+        records.append(
+            ROSParam(
+                cell[0], cell[1], cell[2], cell[3], cell[4], cell[5], cell[6], cell[7]
+            )
+        )
+    file.close()
+    return records
 
 
 def labels_to_relative_angles(
@@ -79,23 +131,156 @@ def labels_to_relative_angles(
     return (relativeLeftAngle, relativeRightAngle)
 
 
+def get_center_point_floor_coordinates(
+    xCam: float, yCam: float, zCam: float, phiCam: float, thetaCam: float
+):
+    """Get the coordinates on the floor of the center point of the camera
+
+    Args:
+        xCam (float): x coordinate of the camera (m)
+        yCam (float): y coordinate of the camera (m)
+        zCam (float): z coordinate of the camera (m)
+        phiCam (float): angle (rad)
+        thetaCam (float): angle (rad)
+
+    Returns:
+        xCenter: x coordinate on the floor
+        yCenter: y coordinate on the floor
+    """
+    xCenter = -zCam * np.tan(thetaCam) * np.cos(phiCam) + xCam
+    yCenter = -zCam * np.tan(thetaCam) * np.sin(phiCam) + yCam
+    return PointsCoordinates(xCenter, yCenter)
+
+
+def plotCameraToTarget(
+    cameraData: ROSParam,
+    target: ROSParam,
+    centerPointFocused: PointsCoordinates,
+):
+
+    ax = plt.figure().add_subplot(projection="3d")
+
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Z")
+    ax.set_xlim(-4, 4)
+    ax.set_ylim(-6, 6)
+    ax.set_zlim(0, 2)
+
+    """ Vector camera to its center focused point """
+    ax.quiver(
+        getattr(cameraData, "position_x"),
+        getattr(cameraData, "position_y"),
+        getattr(cameraData, "position_z"),
+        getattr(centerPointFocused, "x") - getattr(cameraData, "position_x"),
+        getattr(centerPointFocused, "y") - getattr(cameraData, "position_y"),
+        getattr(centerPointFocused, "z") - getattr(cameraData, "position_z"),
+    )
+
+    """ Real position of the target """
+    ax.plot(
+        getattr(target, "position_x"),
+        getattr(target, "position_y"),
+        getattr(target, "position_z"),
+        markerfacecolor="r",
+        markeredgecolor="r",
+        marker="X",
+        markersize=10,
+        alpha=1,
+        label="Target",
+    )
+
+    """ Position of the camera """
+    ax.plot(
+        getattr(cameraData, "position_x"),
+        getattr(cameraData, "position_y"),
+        getattr(cameraData, "position_z"),
+        markerfacecolor="g",
+        markeredgecolor="g",
+        marker="o",
+        markersize=10,
+        alpha=1,
+        label="Camera",
+    )
+
+    """ Position of the estimated target """
+    ax.plot(
+        getattr(centerPointFocused, "x"),
+        getattr(centerPointFocused, "y"),
+        getattr(centerPointFocused, "z"),
+        markerfacecolor="b",
+        markeredgecolor="b",
+        marker=".",
+        markersize=10,
+        alpha=1,
+        label="estimated",
+    )
+
+    ax.legend()
+    plt.show()
+
+
 if __name__ == "__main__":
     """_summary_
 
-    Raises:
-        Exception: if no file name is provided with -file argument (.txt label file)
+            Example:
+    python .\estimate_target_position.py --labelBox '..\..\tests\estimation\src\Exp1\label-1_2_1.txt' --camera '..\..\tests\estimation\src\Exp1\dataset-1-camera2.csv' --intruder '..\..\tests\estimation\src\Exp1\dataset-1-DJIRMS1.csv'        Raises:
+                Exception: if no file name is provided with -file argument (.txt label file)
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--file",
-        dest="file",
+        "--labelBox",
+        dest="labelBox",
         required=True,
         type=str,
-        help="Relative path of the .txt file",
+        help="Relative path of the .txt file containing labelBox coordinates",
+    )
+    parser.add_argument(
+        "--camera",
+        dest="camera",
+        required=True,
+        type=str,
+        help="Relative path of the .csv file containing the position and orientation of the camera",
+    )
+    parser.add_argument(
+        "--intruder",
+        dest="intruder",
+        type=str,
+        help="Relative path of the .csv file containing the real position and orientation of the intruder",
     )
 
     arg = parser.parse_args()
 
-    print(f"\n===={arg.file}=====")
-    coord = from_txt_label_to_array(arg.file)
-    angles = labels_to_relative_angles(coord)
+    coord_box_intruder = from_txt_label_to_LabelBoxParams(arg.labelBox)
+    relative_angles_between_camera_center_and_intruder = labels_to_relative_angles(
+        coord_box_intruder
+    )
+
+    camera = from_ROS_data_to_params(arg.camera)
+    """ A camera is not supposed to move, we can keep the first row """
+    cameraData = camera[0]
+
+    euler = euler_from_quaternion(
+        getattr(cameraData, "orientation_x"),
+        getattr(cameraData, "orientation_y"),
+        getattr(cameraData, "orientation_z"),
+        getattr(cameraData, "orientation_w"),
+    )
+
+    position_center_point = get_center_point_floor_coordinates(
+        getattr(cameraData, "position_x"),
+        getattr(cameraData, "position_y"),
+        getattr(cameraData, "position_z"),
+        euler[0],
+        euler[1],
+    )
+
+    intruder = from_ROS_data_to_params(arg.intruder)
+    intruder_start = intruder[0]
+    print(
+        "......" f"\nCamera position \n {cameraData}\n\n",
+        f"\n\nPosition of the center point of the camera on the floor \n {position_center_point}\n\n",
+        f"\n\nReal position of the intruder\n{intruder_start}\n\n",
+        "......",
+    )
+    plotCameraToTarget(cameraData, intruder_start, position_center_point)
