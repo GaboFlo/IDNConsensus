@@ -1,6 +1,7 @@
 import argparse
+import csv
 from dataclasses import dataclass
-from typing import Dict
+from typing import List
 
 
 @dataclass
@@ -9,6 +10,23 @@ class LabelBoxParams:
     y_box_center: float
     width_box: float
     height_box: float
+
+
+@dataclass
+class CameraParam:
+    timestamp: int
+    position_x: float
+    position_y: float
+    position_z: float
+    orientation_x: float
+    orientation_y: float
+    orientation_z: float
+    orientation_w: float
+
+
+@dataclass
+class CameraParams:
+    array = List[CameraParam]
 
 
 import numpy as np
@@ -42,6 +60,25 @@ def from_txt_label_to_array(
                 if showPrint:
                     print(f"\nIntruder detected \n{targetCoord}\n")
     return targetCoord
+
+
+def from_csv_positions_to_array(relativeTxtPath: str):
+    file = open(relativeTxtPath)
+    csvreader = csv.reader(file)
+    """ Don't care about the header """
+    next(csvreader)
+    records: CameraParams = []
+
+    for row in csvreader:
+        cell = row[0].split(";")
+        cell = [float(i) for i in cell]
+        records.append(
+            CameraParam(
+                cell[0], cell[1], cell[2], cell[3], cell[4], cell[5], cell[6], cell[7]
+            )
+        )
+    file.close()
+    return records
 
 
 def labels_to_relative_angles(
@@ -106,20 +143,31 @@ def get_center_point_floor_coordinates(
 if __name__ == "__main__":
     """_summary_
 
+    Example:
+    python .\estimate_target_position.py --labelBox '..\..\tests\estimation\src\test_relativeAngle_fullBox.txt' --camera '..\..\tests\estimation\src\Exp1\dataset-1-camera2.csv'
+
     Raises:
         Exception: if no file name is provided with -file argument (.txt label file)
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--file",
-        dest="file",
+        "--labelBox",
+        dest="labelBox",
         required=True,
         type=str,
-        help="Relative path of the .txt file",
+        help="Relative path of the .txt file containing labelBox coordinates",
+    )
+    parser.add_argument(
+        "--camera",
+        dest="camera",
+        required=True,
+        type=str,
+        help="Relative path of the .csv file containing the position and orientation of the camera",
     )
 
     arg = parser.parse_args()
 
-    print(f"\n===={arg.file}=====")
-    coord = from_txt_label_to_array(arg.file)
+    print(f"\n===={arg.labelBox}=====")
+    coord = from_txt_label_to_array(arg.labelBox)
     angles = labels_to_relative_angles(coord)
+    from_csv_positions_to_array(arg.camera)
